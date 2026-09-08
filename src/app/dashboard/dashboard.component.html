@@ -1,0 +1,71 @@
+<div class="dashboard">
+  <app-navbar></app-navbar>
+
+  <main class="content">
+    <div class="welcome">
+      <div>
+        <h1>Dashboard</h1>
+
+        <p>Welcome back, {{ user?.name }}</p>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="loading">Loading dashboard...</div>
+
+    <div *ngIf="errorMessage" class="error">
+      {{ errorMessage }}
+    </div>
+
+    <div class="cards" *ngIf="!loading">
+      <div class="card" routerLink="/leads">
+        <span>Total Leads</span>
+        <strong>
+          {{ stats.totalLeads }}
+        </strong>
+      </div>
+
+      <div class="card" routerLink="/leads">
+        <span>New Leads</span>
+        <strong>
+          {{ stats.newLeads }}
+        </strong>
+      </div>
+
+      <div class="card" routerLink="/leads">
+        <span>Site Visits</span>
+        <strong>
+          {{ stats.siteVisits }}
+        </strong>
+      </div>
+
+      <div class="card" routerLink="/bookings">
+        <span>Bookings</span>
+        <strong>
+          {{ stats.bookings }}
+        </strong>
+      </div>
+
+      <div class="card">
+        <span>Upcoming Follow-ups</span>
+
+        <strong>
+          {{ stats.followUps }}
+        </strong>
+      </div>
+
+      <div class="card">
+        <span>Booking Value</span>
+
+        <strong> ₹{{ stats.totalAmount | number }} </strong>
+      </div>
+    </div>
+
+    <!-- <div class="quick-links">
+      <a routerLink="/leads"> Manage Leads </a>
+
+      <a routerLink="/properties"> Properties </a>
+
+      <a routerLink="/bookings"> Bookings </a>
+    </div> -->
+  </main>
+</div>

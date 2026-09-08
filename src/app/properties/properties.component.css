@@ -1,0 +1,174 @@
+.page {
+    padding: 30px;
+    background: #f5f7fb;
+    min-height: calc(100vh - 70px);
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.property-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.property-card {
+    background: white;
+    padding: 22px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .06);
+}
+
+.property-card h2 {
+    margin-top: 0;
+}
+
+.unit-info {
+    display: flex;
+    gap: 15px;
+    margin: 20px 0;
+    font-size: 13px;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.actions button {
+    border: none;
+    padding: 8px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.danger {
+    color: #dc2626;
+}
+
+.units-section {
+    background: white;
+    margin-top: 30px;
+    padding: 25px;
+    border-radius: 10px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+}
+
+.available,
+.booked {
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+.available {
+    background: #dcfce7;
+}
+
+.booked {
+    background: #fee2e2;
+}
+
+.primary-btn {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.loading,
+.empty,
+.error {
+    background: white;
+    padding: 25px;
+    text-align: center;
+}
+
+.error {
+    color: #dc2626;
+}
+
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .45);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    width: 500px;
+    max-width: 90%;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+}
+
+.modal label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.modal input,
+.modal select,
+.modal textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+@media (max-width: 900px) {
+
+    .property-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .page {
+        padding: 15px;
+    }
+
+    .property-grid {
+        grid-template-columns: 1fr;
+    }
+
+}

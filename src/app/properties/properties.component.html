@@ -1,0 +1,142 @@
+<app-navbar></app-navbar>
+
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1>Properties</h1>
+      <p>Manage real estate projects, buildings, and units</p>
+    </div>
+
+    <button class="primary-btn" (click)="openAddProperty()">
+      + Add Property
+    </button>
+  </div>
+
+  <div class="error" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <div class="loading" *ngIf="loading">
+    Loading properties...
+  </div>
+
+  <div class="empty" *ngIf="!loading && properties.length === 0">
+    No properties found. Click "+ Add Property" to create one.
+  </div>
+
+  <!-- PROPERTY GRID -->
+  <div class="property-grid" *ngIf="!loading && properties.length > 0">
+    <div class="property-card" *ngFor="let property of properties">
+      <h2>{{ property.name }}</h2>
+      <p><strong>Location:</strong> {{ property.location }}</p>
+      <p *ngIf="property.description">{{ property.description }}</p>
+
+      <div class="unit-info">
+        <span>Total Units: <strong>{{ property.total_units || 0 }}</strong></span>
+        <span>Available: <strong>{{ property.available_units || 0 }}</strong></span>
+      </div>
+
+      <div class="actions">
+        <button (click)="viewUnits(property)">View Units</button>
+        <button (click)="openAddUnit(property)">+ Add Unit</button>
+        <button (click)="editProperty(property)">Edit</button>
+        <button class="danger" (click)="deleteProperty(property)">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- UNITS SECTION FOR SELECTED PROPERTY -->
+  <div class="units-section" *ngIf="selectedProperty">
+    <div class="section-header">
+      <div>
+        <h2>Units for {{ selectedProperty.name }}</h2>
+        <p>Location: {{ selectedProperty.location }}</p>
+      </div>
+      <button class="primary-btn" (click)="openAddUnit(selectedProperty)">
+        + Add Unit
+      </button>
+    </div>
+
+    <div class="empty" *ngIf="units.length === 0">
+      No units registered for this property yet.
+    </div>
+
+    <table *ngIf="units.length > 0">
+      <thead>
+        <tr>
+          <th>Unit Number</th>
+          <th>Type</th>
+          <th>Price</th>
+          <th>Availability</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let unit of units">
+          <td><strong>{{ unit.unit_number }}</strong></td>
+          <td>{{ unit.type }}</td>
+          <td>₹{{ unit.price | number }}</td>
+          <td>
+            <span [ngClass]="unit.availability === 'AVAILABLE' ? 'available' : 'booked'">
+              {{ unit.availability }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PROPERTY MODAL -->
+  <div class="modal-backdrop" *ngIf="showPropertyForm">
+    <div class="modal">
+      <h2>{{ editingProperty ? 'Edit Property' : 'Add Property' }}</h2>
+
+      <label>Property Name *</label>
+      <input type="text" [(ngModel)]="propertyForm.name" placeholder="e.g. Green Valley Towers" />
+
+      <label>Location *</label>
+      <input type="text" [(ngModel)]="propertyForm.location" placeholder="e.g. Whitefield, Bangalore" />
+
+      <label>Description</label>
+      <textarea [(ngModel)]="propertyForm.description" rows="3" placeholder="Brief description of the property"></textarea>
+
+      <div class="modal-actions">
+        <button (click)="showPropertyForm = false">Cancel</button>
+        <button class="primary-btn" (click)="saveProperty()">Save Property</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- UNIT MODAL -->
+  <div class="modal-backdrop" *ngIf="showUnitForm">
+    <div class="modal">
+      <h2>Add Unit to {{ selectedProperty?.name }}</h2>
+
+      <label>Unit Number *</label>
+      <input type="text" [(ngModel)]="unitForm.unit_number" placeholder="e.g. A-101" />
+
+      <label>Type *</label>
+      <select [(ngModel)]="unitForm.type">
+        <option value="1BHK">1BHK</option>
+        <option value="2BHK">2BHK</option>
+        <option value="3BHK">3BHK</option>
+        <option value="4BHK">4BHK</option>
+        <option value="Villa">Villa</option>
+        <option value="Commercial">Commercial</option>
+      </select>
+
+      <label>Price (₹) *</label>
+      <input type="number" [(ngModel)]="unitForm.price" placeholder="e.g. 5000000" />
+
+      <label>Availability *</label>
+      <select [(ngModel)]="unitForm.availability">
+        <option value="AVAILABLE">AVAILABLE</option>
+        <option value="BOOKED">BOOKED</option>
+      </select>
+
+      <div class="modal-actions">
+        <button (click)="showUnitForm = false">Cancel</button>
+        <button class="primary-btn" (click)="saveUnit()">Save Unit</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,137 @@
+<app-navbar></app-navbar>
+
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1>Bookings</h1>
+
+      <p>Manage property bookings</p>
+    </div>
+
+    <button class="primary-btn" (click)="openBookingForm()">
+      + New Booking
+    </button>
+  </div>
+
+  <div class="success" *ngIf="successMessage">
+    {{ successMessage }}
+  </div>
+
+  <div class="error" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <div class="loading" *ngIf="loading">Loading...</div>
+
+  <div class="empty" *ngIf="!loading && bookings.length === 0">
+    No bookings found.
+  </div>
+
+  <div class="table-container" *ngIf="!loading && bookings.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>Lead</th>
+          <th>Property</th>
+          <th>Unit</th>
+          <th>Date</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let booking of bookings">
+          <td>
+            <strong>
+              {{ booking.lead_name }}
+            </strong>
+
+            <small>
+              {{ booking.lead_phone }}
+            </small>
+          </td>
+
+          <td>
+            {{ booking.property_name }}
+          </td>
+
+          <td>
+            {{ booking.unit_number }}
+          </td>
+
+          <td>
+            {{ booking.booking_date }}
+          </td>
+
+          <td>₹{{ booking.amount | number }}</td>
+
+          <td>
+            <span class="status">
+              {{ booking.status }}
+            </span>
+          </td>
+
+          <td>
+            <button
+              *ngIf="booking.status === 'CONFIRMED'"
+              class="cancel-btn"
+              (click)="cancelBooking(booking)"
+            >
+              Cancel
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- BOOKING FORM -->
+
+  <div class="modal-backdrop" *ngIf="showForm">
+    <div class="modal">
+      <h2>New Booking</h2>
+
+      <label>Lead *</label>
+
+      <select [(ngModel)]="bookingForm.lead_id">
+        <option [value]="0">Select lead</option>
+
+        <option *ngFor="let lead of leads" [value]="lead.id">
+          {{ lead.name }} -
+          {{ lead.phone }}
+        </option>
+      </select>
+
+      <label>Available Unit *</label>
+
+      <select [(ngModel)]="bookingForm.unit_id">
+        <option [value]="0">Select unit</option>
+
+        <option *ngFor="let unit of units" [value]="unit.id">
+          {{ unit.unit_number }}
+          -
+          {{ unit.type }}
+          - ₹{{ unit.price | number }}
+        </option>
+      </select>
+
+      <label>Booking Date *</label>
+
+      <input type="date" [(ngModel)]="bookingForm.booking_date" />
+
+      <label>Amount</label>
+
+      <input type="number" [(ngModel)]="bookingForm.amount" />
+
+      <div class="modal-actions">
+        <button (click)="showForm = false">Cancel</button>
+
+        <button class="primary-btn" (click)="createBooking()">
+          Confirm Booking
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+<header class="navbar">
+  <div class="nav-brand" routerLink="/dashboard">
+    <div class="brand-icon">🏢</div>
+    <span class="brand-text">Real Estate CRM</span>
+  </div>
+
+  <nav class="nav-links">
+    <a
+      routerLink="/dashboard"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Dashboard
+    </a>
+    <a routerLink="/leads" routerLinkActive="active"> Leads </a>
+    <a routerLink="/properties" routerLinkActive="active"> Properties </a>
+    <a routerLink="/bookings" routerLinkActive="active"> Bookings </a>
+  </nav>
+
+  <div class="user-section">
+    <div class="user-info">
+      <span class="user-name">{{ user?.name || "User" }}</span>
+      <span
+        class="role-badge"
+        [ngClass]="user?.role === 'ADMIN' ? 'role-admin' : 'role-sales'"
+      >
+        {{ user?.role }}
+      </span>
+    </div>
+    <button class="logout-btn" (click)="logout()">Logout</button>
+  </div>
+</header>

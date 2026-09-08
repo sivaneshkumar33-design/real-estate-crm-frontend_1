@@ -1,0 +1,290 @@
+<app-navbar></app-navbar>
+
+<div class="leads-page">
+  <!-- Header -->
+
+  <div class="page-header">
+    <div>
+      <h1>Leads</h1>
+
+      <p>Manage your sales leads and follow-ups</p>
+    </div>
+
+    <button class="primary-btn" (click)="openCreateForm()">+ Add Lead</button>
+  </div>
+
+  <!-- Filters -->
+
+  <div class="filter-card">
+    <div class="search-box">
+      <input
+        type="text"
+        placeholder="Search by name, phone or email..."
+        [(ngModel)]="searchText"
+        (keyup.enter)="searchLeads()"
+      />
+
+      <button (click)="searchLeads()">Search</button>
+    </div>
+
+    <div class="stage-filter">
+      <select [(ngModel)]="selectedStage" (change)="filterStage()">
+        <option value="">All Stages</option>
+
+        <option *ngFor="let stage of stages" [value]="stage.value">
+          {{ stage.label }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Error -->
+
+  <div class="error" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Loading -->
+
+  <div class="loading" *ngIf="loading">Loading leads...</div>
+
+  <!-- Table -->
+
+  <div class="table-card" *ngIf="!loading">
+    <table *ngIf="leads.length > 0">
+      <thead>
+        <tr>
+          <th>Name</th>
+
+          <th>Phone</th>
+
+          <th>Email</th>
+
+          <th>Stage</th>
+
+          <th>Salesperson</th>
+
+          <th>Follow-up</th>
+
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let lead of leads">
+          <td>
+            <strong>
+              {{ lead.name }}
+            </strong>
+          </td>
+
+          <td>
+            {{ lead.phone }}
+          </td>
+
+          <td>
+            {{ lead.email || "-" }}
+          </td>
+
+          <td>
+            <span
+              class="stage"
+              [class.new]="lead.stage === 'NEW'"
+              [class.contacted]="lead.stage === 'CONTACTED'"
+              [class.site-visit]="lead.stage === 'SITE_VISIT'"
+              [class.interested]="lead.stage === 'INTERESTED'"
+              [class.negotiation]="lead.stage === 'NEGOTIATION'"
+              [class.booked]="lead.stage === 'BOOKED'"
+              [class.lost]="lead.stage === 'LOST'"
+            >
+              {{ getStageLabel(lead.stage) }}
+            </span>
+          </td>
+
+          <td>
+            {{ lead.assigned_user_name || "Unassigned" }}
+          </td>
+
+          <td>
+            {{ lead.follow_up_date || "-" }}
+          </td>
+
+          <td>
+            <div class="actions">
+              <button class="edit-btn" (click)="editLead(lead)">Edit</button>
+
+              <button class="delete-btn" (click)="deleteLead(lead)">
+                Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Empty state -->
+
+    <div class="empty-state" *ngIf="leads.length === 0">
+      <div class="empty-icon">📋</div>
+
+      <h3>No leads found</h3>
+
+      <p>Create your first lead to get started.</p>
+
+      <button class="primary-btn" (click)="openCreateForm()">+ Add Lead</button>
+    </div>
+  </div>
+</div>
+
+<!-- FORM MODAL -->
+
+<div class="modal-backdrop" *ngIf="showForm">
+  <div class="modal">
+    <!-- Modal header -->
+
+    <div class="modal-header">
+      <div>
+        <h2>
+          {{ editingLeadId ? "Edit Lead" : "Create Lead" }}
+        </h2>
+
+        <p>Enter customer details</p>
+      </div>
+
+      <button class="close-btn" (click)="closeForm()">×</button>
+    </div>
+
+    <!-- Form -->
+
+    <form #leadFormRef="ngForm" (ngSubmit)="saveLead()">
+      <!-- Name -->
+
+      <div class="form-group">
+        <label> Lead Name * </label>
+
+        <input
+          type="text"
+          name="name"
+          [(ngModel)]="leadForm.name"
+          placeholder="Enter customer name"
+          required
+        />
+      </div>
+
+      <!-- Phone -->
+
+      <div class="form-group">
+        <label> Phone * </label>
+
+        <input
+          type="tel"
+          name="phone"
+          [(ngModel)]="leadForm.phone"
+          placeholder="Enter phone number"
+          required
+        />
+      </div>
+
+      <!-- Email -->
+
+      <div class="form-group">
+        <label> Email </label>
+
+        <input
+          type="email"
+          name="email"
+          [(ngModel)]="leadForm.email"
+          placeholder="Enter email"
+        />
+      </div>
+
+      <!-- Source -->
+
+      <div class="form-group">
+        <label> Lead Source </label>
+
+        <select name="source" [(ngModel)]="leadForm.source">
+          <option value="">Select source</option>
+
+          <option value="WEBSITE">Website</option>
+
+          <option value="PHONE">Phone</option>
+
+          <option value="WALK_IN">Walk-in</option>
+
+          <option value="REFERRAL">Referral</option>
+
+          <option value="ADVERTISEMENT">Advertisement</option>
+        </select>
+      </div>
+
+      <!-- Stage -->
+
+      <div class="form-group">
+        <label> Lead Stage </label>
+
+        <select name="stage" [(ngModel)]="leadForm.stage">
+          <option *ngFor="let stage of stages" [value]="stage.value">
+            {{ stage.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Salesperson -->
+
+      <div class="form-group">
+        <label> Assign Salesperson </label>
+
+        <select name="assigned_to" [(ngModel)]="leadForm.assigned_to">
+          <option [ngValue]="undefined">Unassigned</option>
+
+          <option *ngFor="let user of salesUsers" [ngValue]="user.id">
+            {{ user.name }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Follow-up -->
+
+      <div class="form-group">
+        <label> Follow-up Date </label>
+
+        <input
+          type="date"
+          name="follow_up_date"
+          [(ngModel)]="leadForm.follow_up_date"
+        />
+      </div>
+
+      <!-- Notes -->
+
+      <div class="form-group">
+        <label> Notes </label>
+
+        <textarea
+          name="notes"
+          rows="4"
+          [(ngModel)]="leadForm.notes"
+          placeholder="Enter notes or follow-up details"
+        >
+        </textarea>
+      </div>
+
+      <!-- Buttons -->
+
+      <div class="form-actions">
+        <button type="button" class="secondary-btn" (click)="closeForm()">
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="primary-btn"
+          [disabled]="leadFormRef.invalid"
+        >
+          {{ editingLeadId ? "Update Lead" : "Create Lead" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
