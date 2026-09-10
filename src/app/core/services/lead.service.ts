@@ -5,6 +5,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { Lead } from '../models/lead.model';
+import { environment } from '../../../environments/environment';
 
 
 @Injectable({
@@ -12,7 +13,9 @@ import { Lead } from '../models/lead.model';
 })
 export class LeadService {
 
-    private apiUrl = 'http://localhost:5000/api/leads';
+    private apiUrl = `${environment.apiUrl}/leads`;
+
+    // private apiUrl = 'http://localhost:5000/api/leads';
 
 
     constructor(
